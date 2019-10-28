@@ -1,4 +1,4 @@
-from random import shuffle
+import numpy as np
 
 
 class ExperienceStore:
@@ -15,9 +15,9 @@ class ExperienceStore:
             'next_state': next_state
         })
 
-    def get_batch(self, ratio):
-        shuffle(self.experience_store)
-        batch = self.experience_store[:int(ratio * len(self.experience_store))]
+    def get_batch(self, size):
+        np.random.shuffle(self.experience_store)
+        batch = self.experience_store[:size]
         # reset the experience store for now
         self.experience_store = []
         return batch

@@ -1,8 +1,8 @@
 import numpy as np
 
-X = (1, 0)
-O = (0, 1)
-NONE = (0, 0)
+X = (1, 0, 0)
+O = (0, 1, 0)
+NONE = (0, 0, 1)
 
 
 class TicTacToe:
@@ -12,31 +12,42 @@ class TicTacToe:
         self.board = [NONE for _ in range(9)]
 
     def get_state(self):
-        return self.board
+        return [1 if s[0] else 0 for s in self.board] + [1 if s[1] else 0 for s in self.board]
+
+    def get_turn(self):
+        return 'X' if self.turn == X else 'O'
 
     # -1 means you can't place there
     def place(self, loc):
         if self.board[loc] != NONE:
             return -1
-
         if self.turn == X:
             self.board[loc] = X
             self.turn = O
         else:
             self.board[loc] = O
             self.turn = X
+        return 1
 
     def print_board(self):
-        print("""%s|%s|%s
-                 --------
+        print("""
                  %s|%s|%s
-                 --------
-                 %s|%s|%s""" % tuple(['X' if loc == X else 'O' for loc in self.board]))
+                 -----
+                 %s|%s|%s
+                 -----
+                 %s|%s|%s
+                 """ % tuple(['X' if loc == X else ('O' if loc == O else ' ') for loc in self.board]))
 
-    # 1 is X win, -1 is O win, 0 is no win
+    # 1 is X win, -1 is O win, 0 is no win, -2 is tie
     def winner(self):
+        for pair in self.board:
+            if pair not in [X, O]:
+                break
+        else:
+            # board full
+            return -2
         # reshape the board to make it easier to determine winner
-        check_board = np.reshape([1 if loc == X else -1 for loc in self.board], (3, 3))
+        check_board = np.reshape([1 if loc == X else (-1 if loc == O else 0) for loc in self.board], (3, 3))
 
         # rows
         for row in check_board:
